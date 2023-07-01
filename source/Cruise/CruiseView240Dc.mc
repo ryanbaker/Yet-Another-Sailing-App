@@ -23,8 +23,12 @@ class CruiseView240Dc
 
 	function PrintTime(dc, time)
 	{
+        var hour = time.hour;
+        hour = hour % 12;
+        hour = (hour == 0) ? 12 : hour;
+
         var timeString = Lang.format("$1$:$2$:$3$", 
-            [time.hour.format("%02d"), time.min.format("%02d"), time.sec.format("%02d")]);
+            [hour.format("%d"), time.min.format("%02d"), time.sec.format("%02d")]);
 		dc.setColor(Settings.ForegroundColor, Settings.BackgroundColor);
         dc.drawText(dc.getWidth() / 2, 7, Gfx.FONT_MEDIUM, timeString, Gfx.TEXT_JUSTIFY_CENTER);
 	}
