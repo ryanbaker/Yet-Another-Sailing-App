@@ -197,7 +197,7 @@ class YASailingApp extends App.AppBase
     
     // handle position event
     //
-    function onPosition(info) 
+    function onPosition(info as Position.Info) as Void
     {
         _gpsWrapper.SetPositionInfo(info);
     }

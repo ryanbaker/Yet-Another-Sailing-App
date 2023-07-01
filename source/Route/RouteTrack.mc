@@ -18,6 +18,7 @@ class RouteTrack
 	hidden var _wpEpsilon;
 
 	const EARTH_RADIUS_M = 6378137;
+    const METERS_PER_NAUTICAL_MILE = 1852;
 	
 	// Return route distance from current Waypoint to Finish
 	//
@@ -118,14 +119,14 @@ class RouteTrack
 	
 		var distance2Wp = GetDistance(gpsLat, gpsLon, wpLat, wpLon);
 		var inRouteInfo = new InRouteInfo();
-		inRouteInfo.Distance2Wp = distance2Wp / GpsWrapper.METERS_PER_NAUTICAL_MILE;
+		inRouteInfo.Distance2Wp = distance2Wp / METERS_PER_NAUTICAL_MILE;
 		inRouteInfo.Bearing = GetBearing(gpsLat, gpsLon, wpLat, wpLon);
 		inRouteInfo.Vmg = GetVmg(gpsInfo.SpeedKnot, gpsInfo.BearingDegree, inRouteInfo.Bearing);
-		inRouteInfo.Distance2Finish = (_routeDistance + distance2Wp) / GpsWrapper.METERS_PER_NAUTICAL_MILE;
+		inRouteInfo.Distance2Finish = (_routeDistance + distance2Wp) / METERS_PER_NAUTICAL_MILE;
 
 		if (_currentWayPoint > 0)
 		{
-			inRouteInfo.Xte = GetXte(distance2Wp, inRouteInfo.Bearing) / GpsWrapper.METERS_PER_NAUTICAL_MILE;
+			inRouteInfo.Xte = GetXte(distance2Wp, inRouteInfo.Bearing) / METERS_PER_NAUTICAL_MILE;
 		}
 		else
 		{

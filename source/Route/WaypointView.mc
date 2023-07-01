@@ -48,7 +48,7 @@ class WaypointView extends Ui.View
     
     // Refresh view every second
     //
-    function onTimerUpdate()
+    function onTimerUpdate() as Void
     {
     	if (_routeTrack.GetIsRouteFinished())
     	{

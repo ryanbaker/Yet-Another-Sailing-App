@@ -82,5 +82,6 @@ class ConfirmDeleteDelegate extends Ui.ConfirmationDelegate
         {	
     		_gpsWrapper.SetLapArray(new[0]);      	
         }
+        return true;
     }
 }
