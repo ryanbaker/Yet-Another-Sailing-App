@@ -142,7 +142,8 @@ class GpsWrapper
         gpsInfo.LapCount = _lapCount;
         gpsInfo.AvgBearingDegree = _avgBearingDegree;
         gpsInfo.TotalDistance = _distance / METERS_PER_NAUTICAL_MILE;
-        gpsInfo.GpsLocation = _location; 
+        gpsInfo.GpsLocation = _location;
+        gpsInfo.StartTime = _startTime;
 
         return gpsInfo;
     }

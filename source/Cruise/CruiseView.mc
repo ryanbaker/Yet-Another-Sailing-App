@@ -8,6 +8,8 @@ class CruiseView extends Ui.View
 	hidden var _isAvgSpeedDisplay = true;
 	hidden var _displayMode = 0;
 	hidden var _cruiseViewDc;
+    hidden var _duration = null;
+    hidden var _accuracy = 0;
 
     function initialize(gpsWrapper, cruiseViewDc) 
     {
@@ -52,19 +54,28 @@ class CruiseView extends Ui.View
         // Display speed and bearing if GPS available
         //
         var gpsInfo = _gpsWrapper.GetGpsInfo();
-        if (gpsInfo.Accuracy > 0)
+        if (_accuracy < 4 && gpsInfo.Accuracy == 4) {
+            // Vibrate the watch when we get a gps lock
+			SignalWrapper.Start();
+        }
+        _accuracy = gpsInfo.Accuracy;
+//        if (gpsInfo.Accuracy > 0)
         {
         	_cruiseViewDc.PrintSpeed(dc, gpsInfo.SpeedKnot);
-        	_cruiseViewDc.PrintBearing(dc, gpsInfo.BearingDegree);
+        	//_cruiseViewDc.PrintBearing(dc, gpsInfo.BearingDegree);
         	_cruiseViewDc.PrintMaxSpeed(dc, gpsInfo.MaxSpeedKnot);	
         	_cruiseViewDc.PrintTotalDistance(dc, gpsInfo.TotalDistance);
         	
         	if (_displayMode == 0)
         	{
-        		_cruiseViewDc.PrintAvgBearing(dc, gpsInfo.AvgBearingDegree);
+                if (gpsInfo.StartTime != null && gpsInfo.IsRecording) {
+                    _duration = Time.now().subtract(gpsInfo.StartTime);
+                }
+               _cruiseViewDc.PrintDuration(dc, _duration);
         	} 
         	else if (_displayMode == 1)
         	{
+        		_cruiseViewDc.PrintAvgBearing(dc, gpsInfo.AvgBearingDegree);
         		_cruiseViewDc.PrintAvgSpeed(dc, gpsInfo.AvgSpeedKnot);
         	} 
 

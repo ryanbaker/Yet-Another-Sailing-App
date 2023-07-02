@@ -42,4 +42,6 @@ class GpsInfo
 	//
 	var GpsLocation = null;
 
+	// Start Time
+	var StartTime = null;
 }

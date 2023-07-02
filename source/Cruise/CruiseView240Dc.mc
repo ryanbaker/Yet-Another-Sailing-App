@@ -27,11 +27,30 @@ class CruiseView240Dc
         hour = hour % 12;
         hour = (hour == 0) ? 12 : hour;
 
-        var timeString = Lang.format("$1$:$2$:$3$", 
-            [hour.format("%d"), time.min.format("%02d"), time.sec.format("%02d")]);
+        var timeString = Lang.format("$1$:$2$", 
+            [hour.format("%d"), time.min.format("%02d")]);
 		dc.setColor(Settings.ForegroundColor, Settings.BackgroundColor);
         dc.drawText(dc.getWidth() / 2, 7, Gfx.FONT_MEDIUM, timeString, Gfx.TEXT_JUSTIFY_CENTER);
 	}
+
+    function PrintDuration(dc, duration)
+    {
+        var hour = 0;
+        var min = 0;
+        var sec = 0;
+
+        if (duration != null) {
+            hour = duration.value() / 60 / 60;
+            min = duration.value() / 60 % 60;
+            sec = duration.value() % 60;
+        }
+    	var bottomLine = _height - (_height / 3.5).toNumber();
+
+        var timerString = Lang.format("$1$:$2$:$3$", 
+           [hour.format("%02d"), min.format("%02d"), sec.format("%02d")]);
+		dc.setColor(Settings.ForegroundColor, Settings.BackgroundColor);
+        dc.drawText(dc.getWidth() / 2, bottomLine, Gfx.FONT_LARGE, timerString, Gfx.TEXT_JUSTIFY_CENTER);
+    }
 	
     function PrintSpeed(dc, speed)
     {
@@ -51,6 +70,7 @@ class CruiseView240Dc
     
     function PrintBearing(dc, bearing)
     {
+        /*
     	var y =  _height / 2 - dc.getFontHeight(Gfx.FONT_NUMBER_HOT) / 2 - dc.getFontHeight(Gfx.FONT_MEDIUM) / 4 - 2;
         var bearingString = bearing.format("%003d");
     	dc.setColor(Settings.ForegroundColor, Settings.BackgroundColor);
@@ -63,6 +83,7 @@ class CruiseView240Dc
         	_width - 16, 
         	_height - _height / 3.5 - dc.getFontHeight(Gfx.FONT_TINY), 
         	(dc.getFontHeight(Gfx.FONT_NUMBER_HOT) == 52) ? Gfx.FONT_XTINY : Gfx.FONT_TINY, "COG", Gfx.TEXT_JUSTIFY_RIGHT);    
+            */
     }
     
     function PrintMaxSpeed(dc, maxSpeed)
@@ -72,18 +93,17 @@ class CruiseView240Dc
         dc.drawText(20, _height - _height / 3.5 - dc.getFontHeight(Gfx.FONT_MEDIUM), Gfx.FONT_MEDIUM, maxSpeedString, Gfx.TEXT_JUSTIFY_LEFT);
      //   dc.drawText(102, 192, Gfx.FONT_XTINY, "max", Gfx.TEXT_JUSTIFY_RIGHT);       
     }
-    
+    	
     function PrintAvgSpeed(dc, avgSpeed)
     {
     	var bottomLine = _height - (_height / 3.5).toNumber();
     	
         var avgSpeedString = avgSpeed.format("%2.1f");
     	dc.setColor(Settings.ForegroundColor, Gfx.COLOR_TRANSPARENT);
-        dc.drawText(_width / 2 + 10,  bottomLine, Gfx.FONT_LARGE, avgSpeedString, Gfx.TEXT_JUSTIFY_LEFT);  
+        dc.drawText(_width / 2 - 10,  bottomLine, Gfx.FONT_LARGE, avgSpeedString, Gfx.TEXT_JUSTIFY_RIGHT);  
         
         dc.setColor(Settings.DimColor, Gfx.COLOR_TRANSPARENT);
-        dc.drawText(_width / 2 + 10, bottomLine + dc.getFontHeight(Gfx.FONT_LARGE) - 6, Gfx.FONT_XTINY, "avg", Gfx.TEXT_JUSTIFY_LEFT);   
-        dc.drawText(_width / 2 + 10 + dc.getTextWidthInPixels(avgSpeedString, Gfx.FONT_LARGE), bottomLine, Gfx.FONT_XTINY, "kn", Gfx.TEXT_JUSTIFY_LEFT);   
+        dc.drawText(_width / 2 - 10, bottomLine + dc.getFontHeight(Gfx.FONT_LARGE) - 6, Gfx.FONT_XTINY, "avg kt", Gfx.TEXT_JUSTIFY_RIGHT);   
     }
     
     function PrintAvgBearing(dc, avgBearing)
@@ -101,14 +121,49 @@ class CruiseView240Dc
     
     function PrintTotalDistance(dc, totalDistance)
     {
+        var y =  _height / 2 - dc.getFontHeight(Gfx.FONT_NUMBER_HOT) / 2 - dc.getFontHeight(Gfx.FONT_MEDIUM) / 4 - 2;
+        var distanceString = totalDistance.format("%2.1f");
+        if (totalDistance >= 10) {
+            distanceString = totalDistance.format("%2d");
+        }
+    	dc.setColor(Settings.ForegroundColor, Settings.BackgroundColor);
+        dc.drawText(
+        	_width / 2 + _width / 4, 
+        	y, Gfx.FONT_NUMBER_HOT, distanceString, Gfx.TEXT_JUSTIFY_CENTER);
+        dc.setColor(Settings.DimColor, Settings.BackgroundColor);	
+        dc.drawText(
+        	_width - 16, 
+        	_height - _height / 3.5 - dc.getFontHeight(Gfx.FONT_TINY), 
+        	(dc.getFontHeight(Gfx.FONT_NUMBER_HOT) == 52) ? Gfx.FONT_XTINY : Gfx.FONT_TINY, "NM", Gfx.TEXT_JUSTIFY_RIGHT);    
+
+
+/* 
+        // PrintTotalDistance
     	var bottomLine = _height - (_height / 3.5).toNumber();
-        var distanceString = totalDistance.format("%003.1f");
+//        var distanceString = totalDistance.format("%003.1f");
         
         dc.setColor(Settings.DimColor, Gfx.COLOR_TRANSPARENT);
     	dc.drawText(_width / 2 - 10, bottomLine + dc.getFontHeight(Gfx.FONT_LARGE) - 6, Gfx.FONT_XTINY, "nm", Gfx.TEXT_JUSTIFY_RIGHT);
     	
     	dc.setColor(Settings.ForegroundColor, Gfx.COLOR_TRANSPARENT);
         dc.drawText(_width / 2 - 10, bottomLine, Gfx.FONT_LARGE, distanceString, Gfx.TEXT_JUSTIFY_RIGHT);
+
+
+
+    	// Print bearing
+        var y =  _height / 2 - dc.getFontHeight(Gfx.FONT_NUMBER_HOT) / 2 - dc.getFontHeight(Gfx.FONT_MEDIUM) / 4 - 2;
+        var bearingString = bearing.format("%003d");
+    	dc.setColor(Settings.ForegroundColor, Settings.BackgroundColor);
+        dc.drawText(
+        	_width / 2 + _width / 4, 
+        	y, Gfx.FONT_NUMBER_HOT, bearingString, Gfx.TEXT_JUSTIFY_CENTER);
+        	
+        dc.setColor(Settings.DimColor, Settings.BackgroundColor);	
+        dc.drawText(
+        	_width - 16, 
+        	_height - _height / 3.5 - dc.getFontHeight(Gfx.FONT_TINY), 
+        	(dc.getFontHeight(Gfx.FONT_NUMBER_HOT) == 52) ? Gfx.FONT_XTINY : Gfx.FONT_TINY, "COG", Gfx.TEXT_JUSTIFY_RIGHT);    
+*/
      }
     
     function DrawGrid(dc)
