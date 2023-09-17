@@ -33,10 +33,10 @@ class CruiseViewDelegate extends Ui.BehaviorDelegate
     {
         // if lap successfully added, make sound
         //
-        if (_gpsWrapper.AddLap())
-        {
-            SignalWrapper.PressButton();
-        }
+        //if (_gpsWrapper.AddLap())
+        //{
+        //    SignalWrapper.PressButton();
+        //}
         return true;
     }
     

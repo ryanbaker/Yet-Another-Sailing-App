@@ -197,6 +197,8 @@ class GpsWrapper
     {
         if (_activeSession != null)
         {
+            // need to call _activeSession.stop() here before we save and exit???
+            _activeSession.stop();
             _activeSession.save();
         }
     }
@@ -205,6 +207,8 @@ class GpsWrapper
     {
         if (_activeSession != null)
         {
+            // need to call _activeSession.stop() here before we discard???
+            _activeSession.stop();
             _activeSession.discard();
         }
     }    

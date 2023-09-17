@@ -185,15 +185,15 @@ class CruiseView240Dc
     		? (margin - dc.getFontHeight(Gfx.FONT_XTINY) * 3 / 2)
     		: margin - dc.getFontHeight(Gfx.FONT_XTINY) - 3;
     		
-    	dc.drawText(80, ty, Gfx.FONT_XTINY, Lang.format("lap: $1$",[lapCount]), Gfx.TEXT_JUSTIFY_RIGHT);
-    	dc.drawText(130, ty, Gfx.FONT_XTINY, "gps:", Gfx.TEXT_JUSTIFY_RIGHT);
-    	dc.drawText(190, ty, Gfx.FONT_XTINY, "rec:", Gfx.TEXT_JUSTIFY_RIGHT);
+    	//dc.drawText(80, ty, Gfx.FONT_XTINY, Lang.format("lap: $1$",[lapCount]), Gfx.TEXT_JUSTIFY_RIGHT);
+    	dc.drawText(100, ty, Gfx.FONT_XTINY, "gps:", Gfx.TEXT_JUSTIFY_RIGHT);
+    	dc.drawText(160, ty, Gfx.FONT_XTINY, "rec:", Gfx.TEXT_JUSTIFY_RIGHT);
     	
     	dc.setColor(_gpsColorsArray[gpsStatus], Gfx.COLOR_TRANSPARENT);
-        dc.fillCircle(142, ty + dc.getFontHeight(Gfx.FONT_XTINY) / 2 + 2, 8);
+        dc.fillCircle(112, ty + dc.getFontHeight(Gfx.FONT_XTINY) / 2 + 2, 8);
         
         dc.setColor(recordingStatus ? Gfx.COLOR_GREEN : Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT);
-        dc.fillCircle(202, ty + dc.getFontHeight(Gfx.FONT_XTINY) / 2 + 2, 8);
+        dc.fillCircle(172, ty + dc.getFontHeight(Gfx.FONT_XTINY) / 2 + 2, 8);
     }
     
     // Display speed gradient. If current speed > avg speed then trend is positive and vice versa.
