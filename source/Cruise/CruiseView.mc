@@ -65,7 +65,7 @@ class CruiseView extends Ui.View
         if (gpsInfo.Accuracy > 0) {
             // Check if we should prompt to start or stop recording
             if (!_gpsWrapper.GetIsRecording()) {
-                if (gpsInfo.AvgSpeedKnot > 2.0) {
+                if (gpsInfo.SpeedKnot > 2.0) {
                     _moving++;
                     // Only prompt at exactly 10. This way you won't be prompted again unless
                     // the speed drops back below the threshold
