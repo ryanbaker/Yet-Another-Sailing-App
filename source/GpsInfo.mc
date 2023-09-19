@@ -14,7 +14,7 @@ class GpsInfo
 	//
 	var MaxSpeedKnot = 0.0;
 
-	// avg speed in knots for 30 sec.
+	// avg speed in knots for 10 sec.
 	//
 	var AvgSpeedKnot = 0.0;
 

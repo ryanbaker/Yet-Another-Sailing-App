@@ -54,7 +54,7 @@ class GpsWrapper
 
     const LAP_ARRAY_MAX = 20;
     const MAX_SPEED_INTERVAL = 3;
-    const AVG_SPEED_INTERVAL = 30;
+    const AVG_SPEED_INTERVAL = 10;
     const AVG_BEARING_INTERVAL = 10;
     const METERS_PER_NAUTICAL_MILE = 1852;
     const MS_TO_KNOT = 1.9438444924574;
