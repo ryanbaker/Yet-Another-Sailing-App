@@ -10,6 +10,8 @@ class CruiseView extends Ui.View
 	hidden var _cruiseViewDc;
     hidden var _duration = null;
     hidden var _accuracy = 0;
+    hidden var _moving = 0;
+    hidden var _stopped = 0;
 
     function initialize(gpsWrapper, cruiseViewDc) 
     {
@@ -59,6 +61,34 @@ class CruiseView extends Ui.View
 			SignalWrapper.Start();
         }
         _accuracy = gpsInfo.Accuracy;
+
+        if (gpsInfo.Accuracy > 0) {
+            // Check if we should prompt to start or stop recording
+            if (!_gpsWrapper.GetIsRecording()) {
+                if (gpsInfo.AvgSpeedKnot > 2.0) {
+                    _moving++;
+                    // Only prompt at exactly 10. This way you won't be prompted again unless
+                    // the speed drops back below the threshold
+                    if (_moving == 10) {
+                        SignalWrapper.Start();
+                        Ui.pushView(new Toybox.WatchUi.Confirmation("Start Recording?"), new ConfirmStartStopDelegate(_gpsWrapper), Ui.SLIDE_RIGHT);
+                    }
+                } else {
+                    _moving = 0;
+                }
+            } else {
+                if (gpsInfo.AvgSpeedKnot < 1.0) {
+                    _stopped++;
+                    if (_stopped == 60) {
+                        SignalWrapper.Start();
+                        Ui.pushView(new Toybox.WatchUi.Confirmation("Stop Recording?"), new ConfirmStartStopDelegate(_gpsWrapper), Ui.SLIDE_RIGHT);
+                    }
+                } else {
+                    _stopped = 0;
+                }
+            }
+        }
+
 //        if (gpsInfo.Accuracy > 0)
         {
         	_cruiseViewDc.PrintSpeed(dc, gpsInfo.SpeedKnot);

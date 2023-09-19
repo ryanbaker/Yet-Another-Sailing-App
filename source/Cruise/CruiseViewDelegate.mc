@@ -18,7 +18,7 @@ class CruiseViewDelegate extends Ui.BehaviorDelegate
         // if recording available, make sound
         //
         if (_gpsWrapper.GetIsRecording()) {
-            Ui.pushView(new Toybox.WatchUi.Confirmation("Stop Recording?"), new ConfirmStopDelegate(_gpsWrapper), Ui.SLIDE_RIGHT);
+            Ui.pushView(new Toybox.WatchUi.Confirmation("Stop Recording?"), new ConfirmStartStopDelegate(_gpsWrapper), Ui.SLIDE_RIGHT);
         } else if (_gpsWrapper.StartStopRecording())
         {
             SignalWrapper.PressButton();
@@ -78,7 +78,7 @@ class ConfirmSaveDelegate extends Ui.ConfirmationDelegate
     }
 }
 
-class ConfirmStopDelegate extends Ui.ConfirmationDelegate
+class ConfirmStartStopDelegate extends Ui.ConfirmationDelegate
 {
 	var _gpsWrapper;
 	
