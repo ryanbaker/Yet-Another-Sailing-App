@@ -56,8 +56,33 @@ class MainMenuDelegate extends Ui.MenuInputDelegate
         //} 
         else if (item == :exitDiscard) 
         {
-            _gpsWrapper.DiscardRecord();
-            Sys.exit();
+            if(_gpsWrapper.GetIsRecording()) {
+                Ui.showToast("Stop Recording before Discarding", null);
+            } else {
+                Ui.pushView(new Toybox.WatchUi.Confirmation("Discard & Exit?"), new ConfirmDiscardDelegate(_gpsWrapper), Ui.SLIDE_RIGHT);
+            }
         }   
     }
 }
+
+class ConfirmDiscardDelegate extends Ui.ConfirmationDelegate
+{
+	var _gpsWrapper;
+	
+	function initialize(gpsWrapper)
+    {
+        ConfirmationDelegate.initialize();
+        _gpsWrapper = gpsWrapper;
+    }
+    
+    function onResponse(value)
+    {
+        if( value == CONFIRM_YES )
+        {
+            _gpsWrapper.DiscardRecord();
+            Sys.exit();
+        }
+        return true;
+    }
+}
+
