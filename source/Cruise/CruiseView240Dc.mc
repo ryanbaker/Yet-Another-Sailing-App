@@ -186,8 +186,8 @@ class CruiseView240Dc
     		: margin - dc.getFontHeight(Gfx.FONT_XTINY) - 3;
     		
     	//dc.drawText(80, ty, Gfx.FONT_XTINY, Lang.format("lap: $1$",[lapCount]), Gfx.TEXT_JUSTIFY_RIGHT);
-    	dc.drawText(100, ty, Gfx.FONT_XTINY, "gps:", Gfx.TEXT_JUSTIFY_RIGHT);
-    	dc.drawText(160, ty, Gfx.FONT_XTINY, "rec:", Gfx.TEXT_JUSTIFY_RIGHT);
+    	dc.drawText(100, ty, Gfx.FONT_XTINY, "GPS:", Gfx.TEXT_JUSTIFY_RIGHT);
+    	dc.drawText(160, ty, Gfx.FONT_XTINY, "Rec:", Gfx.TEXT_JUSTIFY_RIGHT);
     	
     	dc.setColor(_gpsColorsArray[gpsStatus], Gfx.COLOR_TRANSPARENT);
         dc.fillCircle(112, ty + dc.getFontHeight(Gfx.FONT_XTINY) / 2 + 2, 8);
