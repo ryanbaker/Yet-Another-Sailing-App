@@ -213,6 +213,11 @@ class GpsWrapper
         }
     }    
 
+    function GetIsRecording()
+    {
+        return _activeSession.isRecording();
+    }
+
 	// returns lap data
 	//
     function GetLapArray()

@@ -49,11 +49,11 @@ class MainMenuDelegate extends Ui.MenuInputDelegate
         {
             Ui.pushView(new Rez.Menus.SettingMenu(), new SettingMenuDelegate(_raceTimerView), Ui.SLIDE_LEFT);
         }
-        else if (item == :exitSave) 
-        {
-            _gpsWrapper.SaveRecord();
-            Sys.exit();
-        } 
+        //else if (item == :exitSave) 
+        //{
+        //    _gpsWrapper.SaveRecord();
+        //    Sys.exit();
+        //} 
         else if (item == :exitDiscard) 
         {
             _gpsWrapper.DiscardRecord();

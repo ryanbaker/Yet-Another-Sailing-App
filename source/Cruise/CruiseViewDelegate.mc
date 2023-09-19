@@ -1,4 +1,5 @@
 using Toybox.WatchUi as Ui;
+using Toybox.System as Sys;
 
 class CruiseViewDelegate extends Ui.BehaviorDelegate 
 {
@@ -16,7 +17,9 @@ class CruiseViewDelegate extends Ui.BehaviorDelegate
     {
         // if recording available, make sound
         //
-    	if (_gpsWrapper.StartStopRecording())
+        if (_gpsWrapper.GetIsRecording()) {
+            Ui.pushView(new Toybox.WatchUi.Confirmation("Stop Recording?"), new ConfirmStopDelegate(_gpsWrapper), Ui.SLIDE_RIGHT);
+        } else if (_gpsWrapper.StartStopRecording())
         {
             SignalWrapper.PressButton();
         }
@@ -31,6 +34,13 @@ class CruiseViewDelegate extends Ui.BehaviorDelegate
     
     function onBack()
     {
+        if (_gpsWrapper.GetIsRecording()) {
+            // Don't allow access to the save menu if we're still recording
+            return true;
+        }
+
+        Ui.pushView(new Toybox.WatchUi.Confirmation("Save & Exit?"), new ConfirmSaveDelegate(_gpsWrapper), Ui.SLIDE_RIGHT);
+        
         // if lap successfully added, make sound
         //
         //if (_gpsWrapper.AddLap())
@@ -43,6 +53,50 @@ class CruiseViewDelegate extends Ui.BehaviorDelegate
     function onNextPage()
     {
     	_cruiseView.SwitchNextMode();
+        return true;
+    }
+}
+
+class ConfirmSaveDelegate extends Ui.ConfirmationDelegate
+{
+	var _gpsWrapper;
+	
+	function initialize(gpsWrapper)
+    {
+        ConfirmationDelegate.initialize();
+        _gpsWrapper = gpsWrapper;
+    }
+    
+    function onResponse(value)
+    {
+        if( value == CONFIRM_YES )
+        {
+            _gpsWrapper.SaveRecord();
+            Sys.exit();
+        }
+        return true;
+    }
+}
+
+class ConfirmStopDelegate extends Ui.ConfirmationDelegate
+{
+	var _gpsWrapper;
+	
+	function initialize(gpsWrapper)
+    {
+        ConfirmationDelegate.initialize();
+        _gpsWrapper = gpsWrapper;
+    }
+    
+    function onResponse(value)
+    {
+        if( value == CONFIRM_YES )
+        {
+            if (_gpsWrapper.StartStopRecording())
+            {
+                SignalWrapper.PressButton();
+            }
+        }
         return true;
     }
 }
