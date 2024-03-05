@@ -93,7 +93,7 @@ class ConfirmDiscardDelegate extends Ui.ConfirmationDelegate
                   // discarding, otherwise there is another weird bug where the
                   // system discard menu will show up afterwards.
                   timer = new Timer.Timer();
-                  timer.start(self.method(:finishDiscard), 800, false);
+                  timer.start(self.method(:finishDiscard), 1000, false);
               } else {
                   Ui.showToast("Discard hack failed!", null);
               }
