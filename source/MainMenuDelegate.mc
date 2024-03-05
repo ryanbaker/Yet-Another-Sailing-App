@@ -68,6 +68,7 @@ class MainMenuDelegate extends Ui.MenuInputDelegate
 class ConfirmDiscardDelegate extends Ui.ConfirmationDelegate
 {
 	var _gpsWrapper;
+    var timer = null;
 	
 	function initialize(gpsWrapper)
     {
@@ -79,10 +80,34 @@ class ConfirmDiscardDelegate extends Ui.ConfirmationDelegate
     {
         if( value == CONFIRM_YES )
         {
-            _gpsWrapper.DiscardRecord();
-            Sys.exit();
+            if (_gpsWrapper.GetHasRecorded()) {
+              _gpsWrapper.DiscardRecord();
+              Sys.exit();
+            } else {
+              // If no session has been recorded, we need to start recording before
+              // we can discard, otherwise there will be a weird battery drain issue.
+              if (_gpsWrapper.StartRecording())
+              {
+                  SignalWrapper.PressButton();
+                  // Need to let the recording start for a short period before
+                  // discarding, otherwise there is another weird bug where the
+                  // system discard menu will show up afterwards.
+                  timer = new Timer.Timer();
+                  timer.start(self.method(:finishDiscard), 500, false);
+              } else {
+                  Ui.showToast("Discard hack failed!", null);
+              }
+            }
         }
         return true;
+    }
+
+    function finishDiscard() as Void
+    {
+        timer.stop();
+        timer = null;
+        _gpsWrapper.DiscardRecord();
+        Sys.exit();
     }
 }
 

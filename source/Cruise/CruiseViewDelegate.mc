@@ -37,8 +37,11 @@ class CruiseViewDelegate extends Ui.BehaviorDelegate
         if (_gpsWrapper.GetIsRecording()) {
             // Don't allow access to the save menu if we're still recording
             return true;
+        } else if (!_gpsWrapper.GetHasRecorded()) {
+            // Don't allow access to the save menu if we haven't actually recorded anything yet
+            Ui.showToast("No recording to save yet!", null);
+            return true;
         }
-
         Ui.pushView(new Toybox.WatchUi.Confirmation("Save & Exit?"), new ConfirmSaveDelegate(_gpsWrapper), Ui.SLIDE_RIGHT);
         
         // if lap successfully added, make sound

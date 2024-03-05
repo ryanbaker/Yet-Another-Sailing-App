@@ -9,6 +9,7 @@ class GpsWrapper
 {
     hidden var _lastTimeCall = 0l;
     hidden var _activeSession;
+    hidden var _recordingStarted = false;
     hidden var _isAutoRecordStart = false;
 
     // avg for 10 sec. values (speed)
@@ -64,11 +65,11 @@ class GpsWrapper
         var deviceSettings = Sys.getDeviceSettings();
 
         if(deviceSettings.monkeyVersion[0] >= 3) {
-            _activeSession = Fit.createSession({:name => "Sailing", :sport => Fit.SPORT_SAILING});    
+            _activeSession = Fit.createSession({:name => "Sailing", :sport => Toybox.Activity.SPORT_SAILING});
         } else {
             _activeSession = Fit.createSession({:name => "Sailing", :sport => Fit.SPORT_GENERIC});
         }
-        
+
     }
 
 	function SetPositionInfo(positionInfo)
@@ -186,9 +187,19 @@ class GpsWrapper
         }
         else
         {
+            return StartRecording();
+        }
+        return true;
+    }
+
+    function StartRecording()
+    {
+        if (!_activeSession.isRecording())
+        {
             _activeSession.start();
             _startTime = (_startTime == null) ? Time.now() : _startTime;
             _currentLap = newLap();
+            _recordingStarted = true;
         }
         return true;
     }
@@ -207,15 +218,20 @@ class GpsWrapper
     {
         if (_activeSession != null)
         {
-            // need to call _activeSession.stop() here before we discard???
-            _activeSession.stop();
             _activeSession.discard();
+            _activeSession = null;
+            _recordingStarted = false;
         }
     }    
 
     function GetIsRecording()
     {
         return _activeSession.isRecording();
+    }
+
+    function GetHasRecorded()
+    {
+        return _recordingStarted;
     }
 
 	// returns lap data
