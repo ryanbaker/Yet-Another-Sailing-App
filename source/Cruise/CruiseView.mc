@@ -79,7 +79,8 @@ class CruiseView extends Ui.View
             } else {
                 if (gpsInfo.AvgSpeedKnot < 1.0) {
                     _stopped++;
-                    if (_stopped == 60) {
+                    if (_stopped == 90) {
+                        _stopped = 0;
                         SignalWrapper.Start();
                         Ui.pushView(new Toybox.WatchUi.Confirmation("Stop Recording?"), new ConfirmStartStopDelegate(_gpsWrapper), Ui.SLIDE_RIGHT);
                     }
