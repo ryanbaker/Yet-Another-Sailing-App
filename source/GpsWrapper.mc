@@ -39,6 +39,7 @@ class GpsWrapper
     hidden var _accuracy = 0;
     hidden var _bearingDegree = 0;
     hidden var _location = null;
+    hidden var _lastLocation = null;
 
     // global values
     //
@@ -123,18 +124,24 @@ class GpsWrapper
         _avgBearingIterator = (_avgBearingIterator + 1) % AVG_BEARING_INTERVAL;
 
         var timelapsSecond = timelaps.toDouble() / 1000;
-        var calculatedDistance = _distance + (positionInfo.speed * timelapsSecond);
-        // Prefer distance tracked by the active recording session when available,
-        // but keep speed*time as fallback for compatibility.
-        var sessionInfo = _activeSession.getInfo();
-        if (sessionInfo != null && sessionInfo has :distance && sessionInfo.distance != null)
+        // Accumulate distance using haversine between consecutive GPS positions.
+        // This avoids any dependency on Session.getInfo() which is unreliable on
+        // some devices (crashes on FR255). positionInfo.position gives a Location
+        // object; toDegrees() converts to [lat, lon] in degrees for the formula.
+        var currentLocation = positionInfo.position;
+        if (_lastLocation != null && currentLocation != null)
         {
-            _distance = sessionInfo.distance.toDouble();
+            var prev = _lastLocation.toRadians();
+            var curr = currentLocation.toRadians();
+            var latDiff = curr[0] - prev[0];
+            var lonDiff = curr[1] - prev[1];
+            var a = Math.pow(Math.sin(latDiff / 2), 2) +
+                    Math.cos(prev[0]) * Math.cos(curr[0]) *
+                    Math.pow(Math.sin(lonDiff / 2), 2);
+            var c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+            _distance += 6371000.0 * c;  // Earth radius in meters
         }
-        else
-        {
-            _distance = calculatedDistance;
-        }
+        _lastLocation = currentLocation;
         _duration += timelapsSecond;
 
         _location = positionInfo.position;

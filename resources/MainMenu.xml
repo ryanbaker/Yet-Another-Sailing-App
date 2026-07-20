@@ -13,5 +13,5 @@
 	    	<menu-item id="lapView" label="@Strings.mmenuLapsView"/>
 	    	<menu-item id="setting" label="@Strings.mmenuSetting"/>
 	   		<menu-item id="exitDiscard" label="@Strings.mmenuExitDiscard"/>
-	</menu>	
+	</menu>
 </resources>

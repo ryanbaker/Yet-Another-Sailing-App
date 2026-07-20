@@ -21,6 +21,6 @@ class StartupView extends Ui.View
     //
     function onShow() 
     {
-		    Ui.pushView(_mainMenuView, _mainMenuDelegate, Ui.SLIDE_IMMEDIATE);
+            Ui.pushView(_mainMenuView, _mainMenuDelegate, Ui.SLIDE_IMMEDIATE);
     }
 }

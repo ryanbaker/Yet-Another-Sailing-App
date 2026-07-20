@@ -4,7 +4,7 @@ using Toybox.Position as Position;
 using Toybox.Time as Time;
 using Toybox.System as System;
 
-class YASailingApp extends App.AppBase 
+class YASailingApp extends App.AppBase
 {
     hidden var _gpsWrapper;
 	hidden var _cruiseView;
@@ -16,10 +16,10 @@ class YASailingApp extends App.AppBase
 	hidden var _routeCustomMenuView;
 	hidden var _mainMenu;
 
-    function initialize() 
+    function initialize()
     {
         AppBase.initialize();
-        
+
         setProperty("appVersion", Toybox.WatchUi.loadResource(Rez.Strings.appVersion));
 
 		var deviceSettings = System.getDeviceSettings();
@@ -28,8 +28,8 @@ class YASailingApp extends App.AppBase
 			LogWrapper.WriteWrongDevice();
 			System.exit();
 		}
-		
-	    Settings.LoadSettings();        
+
+	    Settings.LoadSettings();
 		_gpsWrapper = new GpsWrapper();
 
 		if (deviceSettings.screenHeight == 218)
@@ -56,13 +56,13 @@ class YASailingApp extends App.AppBase
 		{
 			initFor454();
 		}
-		else 
+		else
 		{
 			LogWrapper.WriteWrongScreen();
 			System.exit();
 		}
     }
-    
+
     function initFor218()
     {
  	    _cruiseView = new CruiseView(_gpsWrapper, new CruiseView218Dc());
@@ -70,11 +70,11 @@ class YASailingApp extends App.AppBase
         _lapView = new LapView(new LapView218Dc(), _gpsWrapper);
         //_waypointView = new WaypointView(_gpsWrapper, new WaypointView240Dc(), _cruiseView);
     	//_selectRouteView = new SelectRouteView(new SelectRouteView240Dc());
-    	//_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView240Dc(), _waypointView, _selectRouteView); 
-    	
-    	_mainMenu = new Rez.Menus.MainMenuLess();  	
+    	//_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView240Dc(), _waypointView, _selectRouteView);
+
+    	_mainMenu = new Rez.Menus.MainMenuLess();
     }
-    
+
     (:savememory)
     function initFor240()
     {
@@ -83,11 +83,11 @@ class YASailingApp extends App.AppBase
     	_lapView = new LapView(new LapView240Dc(), _gpsWrapper);
     	_waypointView = new WaypointView(_gpsWrapper, new WaypointView240Dc(), _cruiseView);
     	_selectRouteView = new SelectRouteView(new SelectRouteView240Dc());
-    	_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView240Dc(), _waypointView, _selectRouteView); 
-    	
-    	_mainMenu = new Rez.Menus.MainMenuFull();   
+    	_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView240Dc(), _waypointView, _selectRouteView);
+
+    	_mainMenu = new Rez.Menus.MainMenuFull();
     }
-    
+
     (:savememory)
     function initFor260()
     {
@@ -96,11 +96,11 @@ class YASailingApp extends App.AppBase
     	_lapView = new LapView(new LapView240Dc(), _gpsWrapper);
     	_waypointView = new WaypointView(_gpsWrapper, new WaypointView240Dc(), _cruiseView);
     	_selectRouteView = new SelectRouteView(new SelectRouteView240Dc());
-    	_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView240Dc(), _waypointView, _selectRouteView); 
-    	
-    	_mainMenu = new Rez.Menus.MainMenuFull();   
-    }    
-    
+    	_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView240Dc(), _waypointView, _selectRouteView);
+
+    	_mainMenu = new Rez.Menus.MainMenuFull();
+    }
+
 	(:savememory)
     function initFor280()
     {
@@ -109,9 +109,9 @@ class YASailingApp extends App.AppBase
     	_lapView = new LapView(new LapView240Dc(), _gpsWrapper);
     	_waypointView = new WaypointView(_gpsWrapper, new WaypointView280Dc(), _cruiseView);
     	_selectRouteView = new SelectRouteView(new SelectRouteView280Dc());
-    	_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView280Dc(), _waypointView, _selectRouteView); 
-    	
-    	_mainMenu = new Rez.Menus.MainMenuFull(); 
+    	_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView280Dc(), _waypointView, _selectRouteView);
+
+    	_mainMenu = new Rez.Menus.MainMenuFull();
 	}
 
 	(:savememory)
@@ -122,9 +122,9 @@ class YASailingApp extends App.AppBase
     	_lapView = new LapView(new LapView416Dc(), _gpsWrapper);
     	_waypointView = new WaypointView(_gpsWrapper, new WaypointView416Dc(), _cruiseView);
     	_selectRouteView = new SelectRouteView(new SelectRouteView280Dc());
-    	_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView280Dc(), _waypointView, _selectRouteView); 
-    	
-    	_mainMenu = new Rez.Menus.MainMenuFull(); 
+    	_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView280Dc(), _waypointView, _selectRouteView);
+
+    	_mainMenu = new Rez.Menus.MainMenuFull();
 	}
 
 	(:savememory)
@@ -135,42 +135,49 @@ class YASailingApp extends App.AppBase
     	_lapView = new LapView(new LapView416Dc(), _gpsWrapper);
     	_waypointView = new WaypointView(_gpsWrapper, new WaypointView454Dc(), _cruiseView);
     	_selectRouteView = new SelectRouteView(new SelectRouteView280Dc());
-    	_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView280Dc(), _waypointView, _selectRouteView); 
-    	
-    	_mainMenu = new Rez.Menus.MainMenuFull(); 
-	}	
+    	_routeCustomMenuView = new RouteCustomMenuView(_gpsWrapper, new RouteCustomMenuView280Dc(), _waypointView, _selectRouteView);
+
+    	_mainMenu = new Rez.Menus.MainMenuFull();
+	}
 
     // onStart() is called on application start up
     //
-    function onStart(state) 
+    function onStart(state)
     {
     	Position.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPosition));
 		loadState();
+
         LogWrapper.WriteAppStart(Time.now());
         _isStartSuccess = true;
     }
 
     // onStop() is called when your application is exiting
     //
-    function onStop(state) 
+    function onStop(state)
     {
     	if (!_isStartSuccess)
     	{
     		return;
-    	}	
+    	}
+		// If no activity was ever started, explicitly discard the session so
+		// background recording resources are not retained after app exit.
+		if (!_gpsWrapper.GetHasRecorded())
+		{
+			_gpsWrapper.DiscardRecord();
+		}
     	Position.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPosition));
 		saveState();
         Settings.SaveSettings();
 
         LogWrapper.WriteAppStatistic(_gpsWrapper.GetAppStatistic(), Time.now());
     }
-    
+
     // Return the initial view of your application here
     //
-    function getInitialView() 
+    function getInitialView()
     {
     /*
-    	var mainMenu = new Ui.Menu(); 
+    	var mainMenu = new Ui.Menu();
         mainMenu.setTitle("Menu");
         mainMenu.addItem("Race Timer", :raceTimer);
         mainMenu.addItem("Cruise", :cruiseView);
@@ -180,28 +187,28 @@ class YASailingApp extends App.AppBase
         mainMenu.addItem("Exit Discard Track", :exitDiscard);
         mainMenu.addItem("Exit Save Track", :exitSave);
         */
-    			
-        return [ 
-        	new StartupView(_mainMenu, 
-        	new MainMenuDelegate(_cruiseView, _raceTimerView, _lapView, _waypointView, _selectRouteView, _routeCustomMenuView, _gpsWrapper)) 
+
+        return [
+        	new StartupView(_mainMenu,
+        	new MainMenuDelegate(_cruiseView, _raceTimerView, _lapView, _waypointView, _selectRouteView, _routeCustomMenuView, _gpsWrapper))
 		];
     }
-    
+
     // Calls when app settings where updated from mobile device
     //
-    function onSettingsChanged() 
-    { 
+    function onSettingsChanged()
+    {
     	Settings.LoadSettings();
     }
 
-    
+
     // handle position event
     //
     function onPosition(info as Position.Info) as Void
     {
         _gpsWrapper.SetPositionInfo(info);
     }
-    
+
     hidden function loadState()
     {
     	try
@@ -212,7 +219,7 @@ class YASailingApp extends App.AppBase
     		do
     		{
     			var lapId = "lapId" + i;
-    			lap = getProperty(lapId); 
+    			lap = getProperty(lapId);
     			if (lap != null)
     			{
     				lapArray.add(new LapInfo());
@@ -225,7 +232,7 @@ class YASailingApp extends App.AppBase
     				i += 1;
     			}
     		}
-    		while (lap != null);	
+    		while (lap != null);
     		_gpsWrapper.SetLapArray(lapArray);
     	}
     	catch(exception)
@@ -233,11 +240,11 @@ class YASailingApp extends App.AppBase
     		System.println("failed to load state" + exception);
     	}
     }
-    
+
     hidden function saveState()
     {
     	var lapId;
-    	
+
     	var lapArray = _gpsWrapper.GetLapArray();
     	for (var i = 0; i < lapArray.size(); i++)
     	{
@@ -249,10 +256,10 @@ class YASailingApp extends App.AppBase
     		lap[4] = lapArray[i].Duration.toString();
     		lap[5] = lapArray[i].StartTime.value().toString();
     		lapId = "lapId" + i;
-    		
+
     		setProperty(lapId, lap);
     	}
-    	
+
     	// delete unused keys
     	//
     	for (var i = lapArray.size(); i < _gpsWrapper.LAP_ARRAY_MAX; i++)
