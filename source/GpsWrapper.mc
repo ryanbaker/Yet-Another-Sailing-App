@@ -63,14 +63,22 @@ class GpsWrapper
 
     function initialize()
     {
-        var deviceSettings = Sys.getDeviceSettings();
+        _activeSession = null;
+    }
 
+    hidden function ensureSession()
+    {
+        if (_activeSession != null)
+        {
+            return;
+        }
+
+        var deviceSettings = Sys.getDeviceSettings();
         if(deviceSettings.monkeyVersion[0] >= 3) {
             _activeSession = Fit.createSession({:name => "Sailing", :sport => Toybox.Activity.SPORT_SAILING});
         } else {
             _activeSession = Fit.createSession({:name => "Sailing", :sport => Fit.SPORT_GENERIC});
         }
-
     }
 
 	function SetPositionInfo(positionInfo)
@@ -128,20 +136,30 @@ class GpsWrapper
         // This avoids any dependency on Session.getInfo() which is unreliable on
         // some devices (crashes on FR255). positionInfo.position gives a Location
         // object; toDegrees() converts to [lat, lon] in degrees for the formula.
-        var currentLocation = positionInfo.position;
-        if (_lastLocation != null && currentLocation != null)
+        // Only accumulate distance if recording has started.
+        if (_recordingStarted)
         {
-            var prev = _lastLocation.toRadians();
-            var curr = currentLocation.toRadians();
-            var latDiff = curr[0] - prev[0];
-            var lonDiff = curr[1] - prev[1];
-            var a = Math.pow(Math.sin(latDiff / 2), 2) +
-                    Math.cos(prev[0]) * Math.cos(curr[0]) *
-                    Math.pow(Math.sin(lonDiff / 2), 2);
-            var c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
-            _distance += 6371000.0 * c;  // Earth radius in meters
+            var currentLocation = positionInfo.position;
+            if (_lastLocation != null && currentLocation != null)
+            {
+                var prev = _lastLocation.toRadians();
+                var curr = currentLocation.toRadians();
+                var latDiff = curr[0] - prev[0];
+                var lonDiff = curr[1] - prev[1];
+                var a = Math.pow(Math.sin(latDiff / 2), 2) +
+                        Math.cos(prev[0]) * Math.cos(curr[0]) *
+                        Math.pow(Math.sin(lonDiff / 2), 2);
+                var c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+                _distance += 6371000.0 * c;  // Earth radius in meters
+            }
+            _lastLocation = currentLocation;
         }
-        _lastLocation = currentLocation;
+        else
+        {
+            // Reset _lastLocation when not recording so we don't get a big
+            // distance jump when recording starts again after idle time
+            _lastLocation = positionInfo.position;
+        }
         _duration += timelapsSecond;
 
         _location = positionInfo.position;
@@ -157,7 +175,7 @@ class GpsWrapper
         gpsInfo.BearingDegree = _bearingDegree;
         gpsInfo.AvgSpeedKnot = _avgSpeedSum / AVG_SPEED_INTERVAL;
         gpsInfo.MaxSpeedKnot = _maxSpeedKnot;
-        gpsInfo.IsRecording = _activeSession.isRecording();
+        gpsInfo.IsRecording = (_activeSession != null) ? _activeSession.isRecording() : false;
         gpsInfo.LapCount = _lapCount;
         gpsInfo.AvgBearingDegree = _avgBearingDegree;
         gpsInfo.TotalDistance = _distance / METERS_PER_NAUTICAL_MILE;
@@ -173,7 +191,7 @@ class GpsWrapper
     {
         // count lap only when recording
         //
-        if (!_activeSession.isRecording())
+        if (_activeSession == null || !_activeSession.isRecording())
         {
             return false;
         }
@@ -193,25 +211,29 @@ class GpsWrapper
     //
     function StartStopRecording()
     {
-        if (_accuracy < 2 && !_activeSession.isRecording())
+        if (_activeSession != null && _activeSession.isRecording())
+        {
+            _activeSession.stop();
+            saveLap();
+            return true;
+        }
+
+        if (_accuracy < 2)
         {
             return false;
         }
 
-        if (_activeSession.isRecording())
-        {
-            _activeSession.stop();
-            saveLap();
-        }
-        else
-        {
-            return StartRecording();
-        }
-        return true;
+        return StartRecording();
     }
 
     function StartRecording()
     {
+        ensureSession();
+        if (_activeSession == null)
+        {
+            return false;
+        }
+
         if (!_activeSession.isRecording())
         {
             _activeSession.start();
@@ -227,8 +249,12 @@ class GpsWrapper
         if (_activeSession != null)
         {
             // need to call _activeSession.stop() here before we save and exit???
-            _activeSession.stop();
+            if (_activeSession.isRecording())
+            {
+                _activeSession.stop();
+            }
             _activeSession.save();
+            _activeSession = null;
         }
     }
 
@@ -244,7 +270,7 @@ class GpsWrapper
 
     function GetIsRecording()
     {
-        return _activeSession.isRecording();
+        return (_activeSession != null) ? _activeSession.isRecording() : false;
     }
 
     function GetHasRecorded()

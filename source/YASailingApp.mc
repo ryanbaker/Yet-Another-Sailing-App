@@ -181,9 +181,9 @@ class YASailingApp extends App.AppBase
 		// If no activity was ever started, explicitly discard the session so
 		// background recording resources are not retained after app exit.
 		if (!_gpsWrapper.GetHasRecorded())
-		{
-			_gpsWrapper.DiscardRecord();
-		}
+    	{
+    		_gpsWrapper.DiscardRecord();
+    	}
     	Position.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPosition));
 		saveState();
         Settings.SaveSettings();
@@ -191,22 +191,10 @@ class YASailingApp extends App.AppBase
         LogWrapper.WriteAppStatistic(_gpsWrapper.GetAppStatistic(), Time.now());
     }
 
-    // Return the initial view of your application here
+    // getInitialView() is called to get the initial view/delegate pair
     //
     function getInitialView()
     {
-    /*
-    	var mainMenu = new Ui.Menu();
-        mainMenu.setTitle("Menu");
-        mainMenu.addItem("Race Timer", :raceTimer);
-        mainMenu.addItem("Cruise", :cruiseView);
-        mainMenu.addItem("Route", :routeMenu);
-        mainMenu.addItem("View Laps", :lapView);
-        mainMenu.addItem("Settings", :setting);
-        mainMenu.addItem("Exit Discard Track", :exitDiscard);
-        mainMenu.addItem("Exit Save Track", :exitSave);
-        */
-
         return [
         	new StartupView(_mainMenu,
         	new MainMenuDelegate(_cruiseView, _raceTimerView, _lapView, _waypointView, _selectRouteView, _routeCustomMenuView, _gpsWrapper))

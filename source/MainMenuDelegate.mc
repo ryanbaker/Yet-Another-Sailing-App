@@ -83,6 +83,11 @@ class ConfirmDiscardDelegate extends Ui.ConfirmationDelegate
               _gpsWrapper.DiscardRecord();
               Sys.exit();
             } else {
+              // Explicitly close idle session before exit and disable GPS.
+              // Some devices appear to keep higher-power services alive if we
+              // rely only on onStop. Disable GPS before session cleanup.
+              Position.enableLocationEvents(Position.LOCATION_DISABLE, null);
+              _gpsWrapper.DiscardRecord();
               Sys.exit();
             }
         }
