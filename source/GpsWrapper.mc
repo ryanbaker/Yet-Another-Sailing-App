@@ -17,7 +17,7 @@ class GpsWrapper
 	hidden var _avgSpeedIterator = 0;
 	hidden var _avgSpeedSum = 0;
 	hidden var _avgSpeedValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-	
+
 	// max for3 sec. values (speed)
     //
 	hidden var _maxSpeedIterator = 0;
@@ -80,14 +80,14 @@ class GpsWrapper
             return;
         }
 
-        // autostart recording 
+        // autostart recording
         //
         if (!_isAutoRecordStart && Settings.IsAutoRecording)
         {
         	_isAutoRecordStart = StartStopRecording();
         }
 
-        // difference between two method's calls 
+        // difference between two method's calls
         //
         var timeCall = Sys.getTimer();
         var timelaps = (_lastTimeCall > 0) ? timeCall - _lastTimeCall : 0;
@@ -104,8 +104,8 @@ class GpsWrapper
         var maxSpeed = _maxSpeedSum / MAX_SPEED_INTERVAL;
         _maxSpeedKnot = (_maxSpeedKnot < maxSpeed) ? maxSpeed : _maxSpeedKnot;
 		_currentLap.MaxSpeedKnot = (_currentLap.MaxSpeedKnot < maxSpeed) ? maxSpeed : _currentLap.MaxSpeedKnot;
-        
-        // moving avg speed 
+
+        // moving avg speed
         //
         _avgSpeedSum = _avgSpeedSum - _avgSpeedValues[_avgSpeedIterator] + _speedKnot;
         _avgSpeedValues[_avgSpeedIterator] = _speedKnot;
@@ -123,13 +123,24 @@ class GpsWrapper
         _avgBearingIterator = (_avgBearingIterator + 1) % AVG_BEARING_INTERVAL;
 
         var timelapsSecond = timelaps.toDouble() / 1000;
-        _distance += positionInfo.speed * timelapsSecond;
+        var calculatedDistance = _distance + (positionInfo.speed * timelapsSecond);
+        // Prefer distance tracked by the active recording session when available,
+        // but keep speed*time as fallback for compatibility.
+        var sessionInfo = _activeSession.getInfo();
+        if (sessionInfo != null && sessionInfo has :distance && sessionInfo.distance != null)
+        {
+            _distance = sessionInfo.distance.toDouble();
+        }
+        else
+        {
+            _distance = calculatedDistance;
+        }
         _duration += timelapsSecond;
-        
+
         _location = positionInfo.position;
 	}
 
-	// return all calculated data from GPS 
+	// return all calculated data from GPS
 	//
     function GetGpsInfo()
     {
@@ -167,8 +178,8 @@ class GpsWrapper
         //LogWrapper.WriteLapStatistic(_currentLap);
 
         _currentLap = newLap();
-       
-        return true;       
+
+        return true;
     }
 
     // Start & Pause activity recording
@@ -179,7 +190,7 @@ class GpsWrapper
         {
             return false;
         }
-        
+
         if (_activeSession.isRecording())
         {
             _activeSession.stop();
@@ -213,7 +224,7 @@ class GpsWrapper
             _activeSession.save();
         }
     }
-    
+
     function DiscardRecord()
     {
         if (_activeSession != null)
@@ -222,7 +233,7 @@ class GpsWrapper
             _activeSession = null;
             _recordingStarted = false;
         }
-    }    
+    }
 
     function GetIsRecording()
     {
@@ -240,7 +251,7 @@ class GpsWrapper
     {
     	return _lapArray;
     }
-    
+
     // initialize lap data from external source
     //
     function SetLapArray(lapArray)
@@ -278,8 +289,8 @@ class GpsWrapper
             : 0;
 
         _lapArray.add(_currentLap);
-        
-        // no more than 999 laps 
+
+        // no more than 999 laps
         //
         _lapCount = (_lapCount + 1) % 999;
 
@@ -291,7 +302,7 @@ class GpsWrapper
         }
     }
 
-    // initialize new lap 
+    // initialize new lap
     //
     hidden function newLap()
     {
@@ -299,9 +310,9 @@ class GpsWrapper
         //
         var lapInfo = new LapInfo();
         lapInfo.StartTime = Time.now();
-        lapInfo.Distance = _distance;        
+        lapInfo.Distance = _distance;
         lapInfo.Duration = _duration;
-        lapInfo.LapNumber = _lapCount;   
-        return lapInfo;     
+        lapInfo.LapNumber = _lapCount;
+        return lapInfo;
     }
 }
