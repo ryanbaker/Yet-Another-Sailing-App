@@ -58,6 +58,12 @@ class CruiseViewDelegate extends Ui.BehaviorDelegate
     	_cruiseView.SwitchNextMode();
         return true;
     }
+
+    function onPreviousPage()
+    {
+        Ui.popView(Ui.SLIDE_RIGHT);
+        return true;
+    }
 }
 
 class ConfirmSaveDelegate extends Ui.ConfirmationDelegate

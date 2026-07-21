@@ -20,11 +20,32 @@ class CruiseView416Dc
 	function PrintTime(dc, time)
 	{
         var center = dc.getWidth() / 2;
-        var timeString = Lang.format("$1$:$2$:$3$", 
-            [time.hour.format("%02d"), time.min.format("%02d"), time.sec.format("%02d")]);
+        var hour = time.hour;
+        hour = hour % 12;
+        hour = (hour == 0) ? 12 : hour;
+        var timeString = Lang.format("$1$:$2$",
+            [hour.format("%d"), time.min.format("%02d")]);
 		dc.setColor(Settings.ForegroundColor, Settings.BackgroundColor);
         dc.drawText(center, 32, Gfx.FONT_MEDIUM, timeString, Gfx.TEXT_JUSTIFY_CENTER);
 	}
+
+    function PrintDuration(dc, duration)
+    {
+        var hour = 0;
+        var min = 0;
+        var sec = 0;
+
+        if (duration != null) {
+            hour = duration.value() / 60 / 60;
+            min = duration.value() / 60 % 60;
+            sec = duration.value() % 60;
+        }
+
+        var timerString = Lang.format("$1$:$2$:$3$",
+            [hour.format("%02d"), min.format("%02d"), sec.format("%02d")]);
+        dc.setColor(Settings.ForegroundColor, Settings.BackgroundColor);
+        dc.drawText(208, 302, Gfx.FONT_LARGE, timerString, Gfx.TEXT_JUSTIFY_CENTER);
+    }
 	
     function PrintSpeed(dc, speed)
     {
@@ -54,32 +75,34 @@ class CruiseView416Dc
     function PrintAvgSpeed(dc, avgSpeed)
     {
         var avgSpeedString = avgSpeed.format("%2.1f");
-    	dc.setColor(Settings.ForegroundColor, Gfx.COLOR_TRANSPARENT);
-    	dc.drawText(200, 302, Gfx.FONT_LARGE, avgSpeedString, Gfx.TEXT_JUSTIFY_RIGHT);
-    	
-    	dc.setColor(Settings.DimColor, Settings.BackgroundColor);
-        dc.drawText(200, 350, Gfx.FONT_XTINY, "avg", Gfx.TEXT_JUSTIFY_LEFT);   	     
-        dc.drawText(203 + dc.getTextWidthInPixels(avgSpeedString, Gfx.FONT_LARGE), 209, Gfx.FONT_XTINY, "kn", Gfx.TEXT_JUSTIFY_LEFT);   
+		dc.setColor(Settings.ForegroundColor, Gfx.COLOR_TRANSPARENT);
+        dc.drawText(192, 302, Gfx.FONT_LARGE, avgSpeedString, Gfx.TEXT_JUSTIFY_RIGHT);
+
+		dc.setColor(Settings.DimColor, Settings.BackgroundColor);
+        dc.drawText(198, 352, Gfx.FONT_XTINY, "avg", Gfx.TEXT_JUSTIFY_RIGHT);
     }
-    
+
     function PrintAvgBearing(dc, avgBearing)
     {
         var avgBearingString = avgBearing.format("%003d");
     	dc.setColor(Settings.ForegroundColor, Gfx.COLOR_TRANSPARENT);
-    	dc.drawText(240, 302, Gfx.FONT_LARGE, avgBearingString, Gfx.TEXT_JUSTIFY_LEFT);
-    	
+		dc.drawText(218, 302, Gfx.FONT_LARGE, avgBearingString, Gfx.TEXT_JUSTIFY_LEFT);
+
     	dc.setColor(Settings.DimColor, Settings.BackgroundColor);
-        dc.drawText(275, 350, Gfx.FONT_XTINY, "avg", Gfx.TEXT_JUSTIFY_LEFT);   	
-        dc.drawText(245 + dc.getTextWidthInPixels(avgBearingString, Gfx.FONT_LARGE), 295, Gfx.FONT_XTINY, "o", Gfx.TEXT_JUSTIFY_LEFT);
-    }    
-    
+        dc.drawText(218, 352, Gfx.FONT_XTINY, "avg", Gfx.TEXT_JUSTIFY_LEFT);
+        dc.drawText(223 + dc.getTextWidthInPixels(avgBearingString, Gfx.FONT_LARGE), 295, Gfx.FONT_XTINY, "o", Gfx.TEXT_JUSTIFY_LEFT);
+    }
+
     function PrintTotalDistance(dc, totalDistance)
     {
-        var distanceString = totalDistance.format("%003.1f");
-    	dc.setColor(Settings.ForegroundColor, Gfx.COLOR_TRANSPARENT);
-        dc.drawText(200, 302, Gfx.FONT_LARGE, distanceString, Gfx.TEXT_JUSTIFY_RIGHT);
+        var distanceString = totalDistance.format("%2.1f");
+        if (totalDistance >= 10) {
+            distanceString = totalDistance.format("%2d");
+        }
+		dc.setColor(Settings.ForegroundColor, Settings.BackgroundColor);
+        dc.drawText(216, 130, Gfx.FONT_NUMBER_HOT, distanceString, Gfx.TEXT_JUSTIFY_LEFT);
         dc.setColor(Settings.DimColor, Settings.BackgroundColor);
-        dc.drawText(200, 350, Gfx.FONT_XTINY, "nm", Gfx.TEXT_JUSTIFY_RIGHT);
+        dc.drawText(366, 255, Gfx.FONT_TINY, "NM", Gfx.TEXT_JUSTIFY_RIGHT);
      }
     
     function DrawGrid(dc)
@@ -92,19 +115,15 @@ class CruiseView416Dc
     
     function DisplayState(dc, gpsStatus, recordingStatus, lapCount)
     {
-    	dc.setColor(Settings.ForegroundColor, Settings.BackgroundColor);
-    	dc.drawText(123, 91, Gfx.FONT_XTINY, lapCount, Gfx.TEXT_JUSTIFY_LEFT);
-    	
     	dc.setColor(Settings.DimColor, Settings.BackgroundColor);
-    	dc.drawText(115, 90, Gfx.FONT_XTINY, "lap:", Gfx.TEXT_JUSTIFY_RIGHT);
-    	dc.drawText(265, 90, Gfx.FONT_XTINY, "gps:", Gfx.TEXT_JUSTIFY_RIGHT);
-    	dc.drawText(345, 90, Gfx.FONT_XTINY, "rec:", Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(140, 90, Gfx.FONT_XTINY, "gps:", Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(285, 90, Gfx.FONT_XTINY, "rec:", Gfx.TEXT_JUSTIFY_RIGHT);
     	
     	dc.setColor(_gpsColorsArray[gpsStatus], Gfx.COLOR_TRANSPARENT);
-        dc.fillCircle(280, 108, 8);
+        dc.fillCircle(155, 108, 8);
         
         dc.setColor(recordingStatus ? Gfx.COLOR_GREEN : Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT);
-        dc.fillCircle(360, 108, 8);
+        dc.fillCircle(300, 108, 8);
     }
     
     // Display speed gradient. If current speed > avg speed then trend is positive and vice versa.
